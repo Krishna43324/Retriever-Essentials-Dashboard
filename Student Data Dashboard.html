@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Data Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--text:#1c2433;--muted:#6b7589;--line:#e3e7ef;--accent:#3b6ff5;--good:#1f9d6b;--warn:#e0912b;--bad:#d64545;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161f;--card:#1b212d;--text:#e8ecf4;--muted:#93a0b8;--line:#2a3243;--accent:#6e93ff}}
+:root[data-theme="dark"]{--bg:#12161f;--card:#1b212d;--text:#e8ecf4;--muted:#93a0b8;--line:#2a3243;--accent:#6e93ff}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--card);border-bottom:1px solid var(--line)}
+h1{font-size:20px;margin:0}h1 small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
+main{max-width:1200px;margin:0 auto;padding:24px;display:grid;gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi .label{font-size:13px;color:var(--muted)}.kpi .value{font-size:28px;font-weight:700;margin-top:4px}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card h2{font-size:15px;margin:0 0 12px}
+.chart-box{position:relative;height:240px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase}
+.pill{padding:2px 10px;border-radius:99px;font-size:12px;color:#fff}
+.On\ track{background:var(--good)}.Watch{background:var(--warn)}.At\ risk{background:var(--bad)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:0 0 24px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Student Data Dashboard<small>Sample data only. Replace the DATA object in the script with your own.</small></h1>
+  <select id="dept" aria-label="Department filter"></select>
+</header>
+<main>
+  <section class="kpis" id="kpis"></section>
+  <section class="charts">
+    <div class="card"><h2>Enrollment by grade</h2><div class="chart-box"><canvas id="c1"></canvas></div></div>
+    <div class="card"><h2>Attendance rate (monthly)</h2><div class="chart-box"><canvas id="c2"></canvas></div></div>
+    <div class="card"><h2>Students by status</h2><div class="chart-box"><canvas id="c3"></canvas></div></div>
+  </section>
+  <section class="card">
+    <h2>Students</h2>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Grade</th><th>Department</th><th>GPA</th><th>Attendance</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </section>
+</main>
+<footer>Template: HTML + CSS + Chart.js</footer>
+
+<script>
+// ---- Replace this with real data (later: load from a CSV/API/database) ----
+const DATA = {
+  students: [
+    {name:"Ava Johnson",grade:9,dept:"Math",gpa:3.8,att:97},
+    {name:"Liam Chen",grade:9,dept:"Science",gpa:3.1,att:91},
+    {name:"Maya Patel",grade:10,dept:"English",gpa:3.5,att:94},
+    {name:"Noah Garcia",grade:10,dept:"Math",gpa:2.4,att:82},
+    {name:"Emma Davis",grade:11,dept:"Science",gpa:3.9,att:98},
+    {name:"Lucas Brown",grade:11,dept:"English",gpa:2.9,att:88},
+    {name:"Sofia Martinez",grade:12,dept:"Math",gpa:3.3,att:93},
+    {name:"Ethan Wilson",grade:12,dept:"Science",gpa:2.2,att:79},
+    {name:"Zoe Kim",grade:9,dept:"English",gpa:3.6,att:95},
+    {name:"Owen Lee",grade:10,dept:"Science",gpa:3.0,att:90}
+  ],
+  attendanceTrend:{labels:["Apr","May","Jun","Jul","Aug","Sep"],values:[94,93,91,95,92,93]}
+};
+const status = s => (s.gpa < 2.5 || s.att < 85) ? "At risk" : (s.gpa < 3.0 || s.att < 90) ? "Watch" : "On track";
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const avg = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+let charts = [];
+
+function render(){
+  const dept = document.getElementById("dept").value;
+  const list = DATA.students.filter(s => dept === "All" || s.dept === dept);
+  const st = list.map(status);
+  document.getElementById("kpis").innerHTML = [
+    ["Total students", list.length],
+    ["Average GPA", avg(list.map(s=>s.gpa)).toFixed(2)],
+    ["Avg attendance", avg(list.map(s=>s.att)).toFixed(1)+"%"],
+    ["At-risk students", st.filter(x=>x==="At risk").length]
+  ].map(k=>`<div class="card kpi"><div class="label">${k[0]}</div><div class="value">${k[1]}</div></div>`).join("");
+  document.getElementById("rows").innerHTML = list.map((s,i)=>
+    `<tr><td>${s.name}</td><td>${s.grade}</td><td>${s.dept}</td><td>${s.gpa.toFixed(1)}</td><td>${s.att}%</td><td><span class="pill ${st[i]}">${st[i]}</span></td></tr>`).join("");
+
+  charts.forEach(c=>c.destroy());
+  Chart.defaults.color = css("--muted");
+  Chart.defaults.borderColor = css("--line");
+  Chart.defaults.maintainAspectRatio = false;
+  const grades = [9,10,11,12];
+  const accent = css("--accent"), cols = [css("--good"), css("--warn"), css("--bad")];
+  charts = [
+    new Chart("c1",{type:"bar",data:{labels:grades.map(g=>"Grade "+g),datasets:[{data:grades.map(g=>list.filter(s=>s.grade===g).length),backgroundColor:accent,borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}}),
+    new Chart("c2",{type:"line",data:{labels:DATA.attendanceTrend.labels,datasets:[{data:DATA.attendanceTrend.values,borderColor:accent,backgroundColor:accent+"33",fill:true,tension:.3}]},options:{plugins:{legend:{display:false}},scales:{y:{min:80,max:100}}}}),
+    new Chart("c3",{type:"doughnut",data:{labels:["On track","Watch","At risk"],datasets:[{data:["On track","Watch","At risk"].map(l=>st.filter(x=>x===l).length),backgroundColor:cols,borderWidth:0}]},options:{plugins:{legend:{position:"bottom"}}}})
+  ];
+}
+const sel = document.getElementById("dept");
+["All",...new Set(DATA.students.map(s=>s.dept))].forEach(d=>sel.add(new Option(d==="All"?"All departments":d,d)));
+sel.addEventListener("change",render);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
