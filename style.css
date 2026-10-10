@@ -1,0 +1,98 @@
+﻿/* ===== COLORS: change these and the whole page updates ===== */
+:root {
+    --bg: #f4f6fa; /* page background */
+    --card: #ffffff; /* boxes */
+    --text: #1c2433; /* main text */
+    --muted: #6b7589; /* gray text */
+    --line: #e3e7ef; /* borders */
+    --accent: #3b6ff5; /* chart color */
+    --good: #1f9d6b; /* green */
+    --warn: #e0912b; /* orange */
+    --bad: #d64545; /* red */
+}
+
+/* ===== PAGE ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 24px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 16px;
+}
+
+/* ===== CARDS (the white boxes) ===== */
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+/* ===== ROWS OF CARDS ===== */
+.kpis,
+.charts {
+    display: flex;
+    gap: 16px;
+}
+
+    .kpis .card,
+    .charts .card {
+        flex: 1;
+    }
+
+.chart-box {
+    height: 240px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid var(--line);
+}
+
+/* ===== STATUS LABELS ===== */
+.pill {
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: white;
+}
+
+.On\ track {
+    background: var(--good);
+}
+
+.Watch {
+    background: var(--warn);
+}
+
+.At\ risk {
+    background: var(--bad);
+}
