@@ -17,8 +17,101 @@ CREATE TABLE IF NOT EXISTS department_data( --a data file
     shared BOOL DEFAULT FALSE, --will automatically become TINYINT(1). TRUE=1+, FALSE=0
     date_created DATETIME DEFAULT GETDATE(),
     collected_data = VARBINARY(MAX), --file contents
+
+    FOREIGN KEY (Dep_ID)
+        REFERENCES Department(Dep_ID)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (User_ID)
+        REFERENCES User(User_ID)
+        ON DELETE RESTRICT,
+
+    FOREIGN KEY (CSV_ID)
+        REFERENCES `CSV_File`(CSV_ID)
+        ON DELETE CASCADE,
+
+    INDEX idx_data_department (Dep_ID),
+    INDEX idx_data_uploader (User_ID)
+    
 );
 
 --EXAMPLE for formatting
 INSERT INTO department_data (data_file_name, user_id, department, collected_data)
 VALUES('Retriever_Essentials_Weekly_Report.csv', '0', 'Retriever_Essentials', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\Departments\Retriever_Essentials\Retriever_Essentials_Weekly_Report.csv', SINGLE_BLOB) AS x));
+
+
+
+CREATE TABLE user_table(
+    User_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+
+    -- Store a password HASH, never a plaintext password.
+    Password_Hash VARCHAR(255) NOT NULL,
+
+    Permissions ENUM(
+        'Viewer',
+        'Department_Manager',
+        'Admin'
+    ) NOT NULL DEFAULT 'Viewer',
+
+    Dep_ID INT NULL,
+    Created_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (Dep_ID)
+        REFERENCES Department(Dep_ID)
+        ON DELETE SET NULL,
+
+    INDEX idx_user_department (Dep_ID)
+);
+
+CREATE TABLE `CSV_File`(
+    CSV_ID INT AUTO_INCREMENT PRIMARY KEY,
+    File_Name VARCHAR(255) NOT NULL,
+    File_Path VARCHAR(500) NOT NULL,
+    File_Size_KB INT UNSIGNED NOT NULL DEFAULT 0,
+    Upload_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    Uploader_ID INT NOT NULL,
+
+    FOREIGN KEY (Uploader_ID)
+        REFERENCES User(User_ID)
+        ON DELETE RESTRICT,
+
+    INDEX idx_csv_uploader (Uploader_ID),
+    INDEX idx_csv_upload_date (Upload_Date)
+);
+
+CREATE TABLE Figure (
+    Figure_ID INT AUTO_INCREMENT PRIMARY KEY,
+
+    Dep_ID INT NOT NULL,
+    CSV_ID INT NULL,
+
+    Chart_Type VARCHAR(50) NOT NULL,
+    Caption VARCHAR(500) NULL,
+
+    -- Coordinates for the figure's position in the UI.
+    Location_X INT NOT NULL DEFAULT 0,
+    Location_Y INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (Dep_ID)
+        REFERENCES Department(Dep_ID)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (CSV_ID)
+        REFERENCES `CSV_File`(CSV_ID)
+        ON DELETE SET NULL,
+
+    INDEX idx_figure_department (Dep_ID)
+);
+
+
+
+
+
+
+
+
+
+
+
