@@ -49,8 +49,13 @@ function triggerUploadDataPage() {
     window.location.href = 'UploadData.html';
 }
 
+function triggerDeleteDataPage() {
+    window.location.href = 'DeleteData.html';
+}
+
 const sel = document.getElementById("dept");
 ["All", ...new Set(DATA.students.map(s => s.dept))].forEach(d => sel.add(new Option(d === "All" ? "All departments" : d, d)));
 sel.addEventListener("change", render);
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+document.getElementById('uploadCSV').addEventListener('click', triggerUploadDataPage);
 render();
