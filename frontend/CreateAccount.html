@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create Account</title>
+
+<body>
+
+<p> Instructions: You are an administrator. Specify the username and password of the account that you want to create. 
+    Give these credentials to a staff member of each department.</p>
+
+<div class="upload-form">
+    <input type="text" id="username" placeholder="Account Username (for example, Bob145)" />
+    <input type="text" id="password" placeholder="Account Password" />
+    <button onclick="createAccount()">Create Account</button>
+</div>
+
+<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
+<script src="js/uploadData.js"></script>
+
+</body>
+</html>
