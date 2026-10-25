@@ -1,23 +1,35 @@
+<!--
+The form class basically will route the HTML request to the Flask API for the backend.
+The action = "/login" means it will route this request to the /login route of the Flask backend.
+Method = post is defining that it will send a POST request to backend.
+The if error stuff is a template tag. If the backend passes back an 'error' variable, this will
+display the specific error like "Invalid Password".
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Login Page</title>
+</head>
 
 <body>
 
 <p> Regardless of whether you are an administrator or staff member, please login to view the dashboard. 
     Your accesses will automatically enforce what functions you can do and what things you can do.</p>
 
-<div class="upload-form">
-    <input type="text" id="username" placeholder="Account Username" />
-    <input type="text" id="password" placeholder="Account Password" />
-    <button onclick="login()">Login</button>
-</div>
-
-<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
-<script src="js/uploadData.js"></script>
+<form class="upload-form" action="/login" method="post">
+    <label for="username">Account Username</label>
+    <input type="text" id="username" name="username" placeholder="Account Username" required />
+    <label for="password">Account Password</label>
+    <input type="password" id="password" name="password" placeholder="Account Password" required />
+    <button type="submit">Login</button>
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
+</form>
 
 </body>
 </html>

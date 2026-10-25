@@ -1,3 +1,3 @@
 function returnToDashboard() {
-    window.location.href = 'Student Data Dashboard.html';
+    window.location.href = '/frontend/Student Data Dashboard.html';
 }

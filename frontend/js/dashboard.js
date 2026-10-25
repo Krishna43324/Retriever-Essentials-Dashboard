@@ -46,11 +46,15 @@ function render() {
 }
 
 function triggerUploadDataPage() {
-    window.location.href = 'UploadData.html';
+    window.location.href = '/frontend/UploadData.html';
 }
 
 function triggerDeleteDataPage() {
-    window.location.href = 'DeleteData.html';
+    window.location.href = '/frontend/DeleteData.html';
+}
+
+function triggerCreateAccountPage() {
+    window.location.href = '/frontend/CreateAccount.html';
 }
 
 const sel = document.getElementById("dept");
