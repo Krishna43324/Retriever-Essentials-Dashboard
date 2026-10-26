@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from pathlib import Path
+import bcrypt
 
 curr_file = Path(__file__).resolve()
 project_root = curr_file.parent.parent
@@ -22,7 +23,11 @@ def login():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
 
-    if username == 'admin' and password == 'AdminRetriever21256#':
+    hashed_password = "$2b$12$j2LlR1m1JSyLQhdvekmM3u7dsulyQHC3zpPTXDUWY.wtrybv8AuE6"
+
+    valid_password = bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode("utf-8"))
+
+    if username == 'admin' and valid_password:
         return render_template('Student Data Dashboard.html')
     
     return render_template(
