@@ -47,9 +47,16 @@ def upload_file():
     omission_type = request.form.get('columnOrRow')
     uploaded_file = request.files.get('dataUpload')
 
-    # validator = CSV_validator()
-    # uploadObject = CSVUploader(validator)
-    # uploadObject.upload_file(uploadObject, fileIO, 1)
+    validator = CSV_validator()
+    uploadObject = CSVUploader(validator)
+    result = uploadObject.upload_file(uploaded_file, user_id=1)
+
+    if result["success"]:
+        print("Upload successful:", result["message"])
+    else:
+        print("Upload failed:", result["message"])
+
+    return jsonify(result)
 
 @app.route('/create-account', methods=['POST'])
 def createAccount():
