@@ -1,91 +1,60 @@
-
+USE retriever_dashboard; -- Name of MySQL Server
 
 CREATE TABLE IF NOT EXISTS departments(
     dep_id INT AUTO_INCREMENT PRIMARY KEY, --primary key means each one will be unique
-    dep_name VARCHAR(100) NOT NULL, --must have name to be saved
-    dep_users INT AUTO_INCREMENT PRIMARY KEY,
-    num_figs INT,
-    date_created DATE
+    dep_name VARCHAR(100) NOT NULL UNIQUE, --must have name to be saved
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS department_data( --a data file
-    data_file_name NVARCHAR(255) NOT NULL, --the file name
-    --data_file_extension NVARCHAR(10), --the file extension such as ".csv"
-    dep_data_id INT AUTO_INCREMENT PRIMARY KEY, 
-    user_id INT NOT NULL,
-    department VARCHAR(100) NOT NULL, 
-    shared BOOL DEFAULT FALSE, --will automatically become TINYINT(1). TRUE=1+, FALSE=0
-    date_created DATETIME DEFAULT GETDATE(),
-    collected_data = VARBINARY(MAX), --file contents
+CREATE TABLE IF NOT EXISTS users(
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    Password_Hash VARCHAR(255) NOT NULL, -- Store a password HASH
 
-    FOREIGN KEY (Dep_ID)
-        REFERENCES Department(Dep_ID)
-        ON DELETE CASCADE,
+    permissions ENUM('Viewer', 'Department_Manager', 'Admin') NOT NULL DEFAULT 'Viewer',
+    dep_id INT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (User_ID)
-        REFERENCES User(User_ID)
-        ON DELETE RESTRICT,
-
-    FOREIGN KEY (CSV_ID)
-        REFERENCES `CSV_File`(CSV_ID)
-        ON DELETE CASCADE,
-
-    INDEX idx_data_department (Dep_ID),
-    INDEX idx_data_uploader (User_ID)
-    
+    CONSTRAINT fk_users_department
+    FOREIGN KEY (dep_id)
+    REFERENCES departments(dep_id)
+    ON DELETE SET NULL
 );
 
---EXAMPLE for formatting
-INSERT INTO department_data (data_file_name, user_id, department, collected_data)
-VALUES('Retriever_Essentials_Weekly_Report.csv', '0', 'Retriever_Essentials', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\Departments\Retriever_Essentials\Retriever_Essentials_Weekly_Report.csv', SINGLE_BLOB) AS x));
-
-
-
-CREATE TABLE user_table(
-    User_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Email VARCHAR(255) NOT NULL UNIQUE,
-
-    -- Store a password HASH, never a plaintext password.
-    Password_Hash VARCHAR(255) NOT NULL,
-
-    Permissions ENUM(
-        'Viewer',
-        'Department_Manager',
-        'Admin'
-    ) NOT NULL DEFAULT 'Viewer',
-
-    Dep_ID INT NULL,
-    Created_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (Dep_ID)
-        REFERENCES Department(Dep_ID)
-        ON DELETE SET NULL,
-
-    INDEX idx_user_department (Dep_ID)
-);
 
 CREATE TABLE `CSV_File`(
-    CSV_ID INT AUTO_INCREMENT PRIMARY KEY,
-    File_Name VARCHAR(255) NOT NULL,
-    File_Path VARCHAR(500) NOT NULL,
-    File_Size_KB INT UNSIGNED NOT NULL DEFAULT 0,
-    Upload_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    csv_id INT AUTO_INCREMENT PRIMARY KEY,
+    file_Name VARCHAR(255) NOT NULL,
+    file_Path VARCHAR(500) NOT NULL,
+    file_Size_KB INT UNSIGNED NOT NULL DEFAULT 0,
+    row_count INT UNSIGNED NOT NULL DEFAULT 0,
+    upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    uploader_id  INT UNSIGNED NOT NULL,
+    shared BOOLEAN NOT NULL DEFAULT FALSE,
+
 
     Uploader_ID INT NOT NULL,
 
-    FOREIGN KEY (Uploader_ID)
-        REFERENCES User(User_ID)
+    CONSTRAINT fk_csv_uploader
+        FOREIGN KEY (uploader_id)
+        REFERENCES users(user_id)
         ON DELETE RESTRICT,
 
-    INDEX idx_csv_uploader (Uploader_ID),
-    INDEX idx_csv_upload_date (Upload_Date)
+    CONSTRAINT fk_csv_department
+        FOREIGN KEY (dep_id)
+        REFERENCES departments(dep_id)
+        ON DELETE RESTRICT,
+
+    INDEX idx_csv_uploader (uploader_id),
+    INDEX idx_csv_department (dep_id),
+    INDEX idx_csv_upload_date (upload_date)
 );
 
 CREATE TABLE Figure (
     Figure_ID INT AUTO_INCREMENT PRIMARY KEY,
 
     Dep_ID INT NOT NULL,
-    CSV_ID INT NULL,
+    csv_id INT NULL,
 
     Chart_Type VARCHAR(50) NOT NULL,
     Caption VARCHAR(500) NULL,
@@ -98,8 +67,8 @@ CREATE TABLE Figure (
         REFERENCES Department(Dep_ID)
         ON DELETE CASCADE,
 
-    FOREIGN KEY (CSV_ID)
-        REFERENCES `CSV_File`(CSV_ID)
+    FOREIGN KEY (csv_id)
+        REFERENCES `CSV_File`(csv_id)
         ON DELETE SET NULL,
 
     INDEX idx_figure_department (Dep_ID)
@@ -150,7 +119,7 @@ VALUES (
 INSERT INTO Department_Data (
     Dep_ID,
     User_ID,
-    CSV_ID,
+    csv_id,
     Shared
 )
 VALUES (
@@ -163,7 +132,7 @@ VALUES (
 -- Create a chart associated with the uploaded file.
 INSERT INTO Figure (
     Dep_ID,
-    CSV_ID,
+    csv_id,
     Chart_Type,
     Caption,
     Location_X,
@@ -178,13 +147,5 @@ VALUES (
     0
 );
 
-
-
-
-
-
-
-
-
-
-
+INSERT IGNORE INTO departments (dep_name)
+VALUES ('Retriever Essentials');
