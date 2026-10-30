@@ -34,11 +34,6 @@ CREATE TABLE IF NOT EXISTS department_data( --a data file
     INDEX idx_data_uploader (User_ID)
 );
 
---EXAMPLE for formatting
-INSERT INTO department_data (data_file_name, user_id, department, collected_data)
-VALUES('Retriever_Essentials_Weekly_Report.csv', '0', 'Retriever_Essentials', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\Departments\Retriever_Essentials\Retriever_Essentials_Weekly_Report.csv', SINGLE_BLOB) AS x));
-
-
 
 CREATE TABLE user_table(
     User_ID INT AUTO_INCREMENT PRIMARY KEY,
