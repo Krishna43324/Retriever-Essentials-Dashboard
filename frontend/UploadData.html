@@ -5,17 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Upload Data</title>
 
+<style>
+    .upload-form input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 6px;
+    }
+</style>
+
 <body>
 
 <p> Instructions: Specify the exact name of the entire dataset (Retrievers Essentials Department Student Impact Data) in the "Name" field. 
     Download your data in whatever tool (Excel, Google Spreadsheets, etc) as a CSV file. Upload the file into the "File" button.</p>
 
-
-
 <div class="upload-form">
-    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" />
+    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" /> <br>
+    <input type="text" id="fieldsToOmit" placeholder="Fields that you want to omit from being stored in the database separated by commas with no spaces for the commas. (e.g., StudentID,SSN,Password)" /> <br>
+    <input type="text" id="columnOrRow" placeholder="Type 'Row' or 'Column' if you want to omit the entire column or entire row. If you specified that
+    you want to omit StudentID, and the StudentID header is the top of the spreadsheet and the IDs of each entry are below, you would type 'Column' here." /> <br>
     <input type="file" id="dataUpload" accept=".csv" />
-    <button onclick="handleUpload()">Upload Data</button>
+    <button onclick="handleUpload()">Upload Data</button> <br> <br> <br>
 </div>
 
 <button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
