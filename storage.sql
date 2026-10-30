@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS department_data( --a data file
 
     INDEX idx_data_department (Dep_ID),
     INDEX idx_data_uploader (User_ID)
-    
 );
 
 --EXAMPLE for formatting
