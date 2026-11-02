@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 
-CREATE TABLE `CSV_File`(
+CREATE TABLE csv_files(
     csv_id INT AUTO_INCREMENT PRIMARY KEY,
     file_Name VARCHAR(255) NOT NULL,
     file_Path VARCHAR(500) NOT NULL,
@@ -50,11 +50,9 @@ CREATE TABLE `CSV_File`(
     INDEX idx_csv_upload_date (upload_date)
 );
 
-CREATE TABLE Figure (
+CREATE TABLE figures(
     figure_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     dep_ID INT UNSIGNED NOT NULL,
-    csv_id INT UNSIGNED NULL,
-
     chart_Type enum('bar', 'line', 'scatter', 'pie', 'doughnut') NOT NULL,
     caption VARCHAR(500) NULL,
 
@@ -69,7 +67,7 @@ CREATE TABLE Figure (
 
     CONSTRAINT fk_figure_department
         FOREIGN KEY (dep_id)
-        REFERENCES department(dep_id)
+        REFERENCES departments(dep_id)
         ON DELETE RESTRICT,
 
     CONSTRAINT fk_figure_csv
@@ -82,12 +80,36 @@ CREATE TABLE Figure (
 );
 
 
+-- connect csv_files with figures (many to many relationship)
+CREATE TABLE IF NOT EXISTS figure_datasets (
+    figure_id INT UNSIGNED NOT NULL,
+    csv_id INT UNSIGNED NOT NULL,
+    display_order INT UNSIGNED NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (figure_id, csv_id),
+
+    CONSTRAINT fk_figure_datasets_figure
+        FOREIGN KEY (figure_id)
+        REFERENCES figures(figure_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_figure_datasets_csv
+        FOREIGN KEY (csv_id)
+        REFERENCES csv_files(csv_id)
+        ON DELETE CASCADE,
+
+    INDEX idx_figure_datasets_csv (csv_id)
+);
+
+
 -- #############################################################
 --                        TESTING
 -- #############################################################
+/*
+-- Run these tests in SQL Workbench with the working database to test its functionalities
+
 
 USE retriever_dashboard;
-
 
 -- ============================================================
 -- TEST 1: CREATE A DEPARTMENT
@@ -227,3 +249,4 @@ JOIN departments AS d
     ON f.dep_id = d.dep_id
 LEFT JOIN csv_files AS c
     ON f.csv_id = c.csv_id;
+    */
