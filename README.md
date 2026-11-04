@@ -10,11 +10,14 @@ Setting up the Database:
 3. Download the MySQL Workbench version that works with your OS
 4. Open the Workbench. Using your username and password from the server steup, enter the correct details/credentials to register/save the server in Workbench. 
 5. Make sure your MySQL server is running. If the workbench shows it is inactive, start it using the following method according to your OS. 
+
     a. For Windows: use "windows_key + r" and type "services.msc". In this window, navigate to the section with a service named MySQL with some numbers following it, such as "MySQL2610". Right click it and and select "start" to run the server. You can also set the server to startup automatically when you start the computer.
+
     b. For Linux: use the command "sudo systemctl start mysql", or "mysqld" to start it directly.
+
     c. For MacOS: use the command "mysql.server start" or "brew services start mysql" if you installed it via Homebrew.
 6. Now that your server is running in Workbench, double click on your server and you should see a "connected" status at the top of your screen. If you do NOT see that, double check that your server is running by going through step 5 again, followed by troubleshooting if that fails as well.
-7. You should now see an empty SQL file. To check your connection, write the following statements in the file: "USE retriever_dashboard;", go to the next line and write "SHOW TABLES;". If this displays 5 tables, you have setup the database!
+7. You should now see an empty SQL file. To check your connection, write the following statements in the file: "CREATE DATABASE retriever_dashboard;", "USE retriever_dashboard;", go to the next line and write "SHOW TABLES;". If this displays 5 tables, you have setup the database!
 8. Follow the Flask instructions to setup your Python environment to connect the program with the database.
 
 

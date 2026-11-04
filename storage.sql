@@ -30,10 +30,9 @@ CREATE TABLE csv_files(
     row_count INT UNSIGNED NOT NULL DEFAULT 0,
     upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     uploader_id  INT UNSIGNED NOT NULL,
+    dep_id INT UNSIGNED NULL,
     shared BOOLEAN NOT NULL DEFAULT FALSE,
 
-
-    Uploader_ID INT NOT NULL,
 
     CONSTRAINT fk_csv_uploader
         FOREIGN KEY (uploader_id)
@@ -61,7 +60,7 @@ CREATE TABLE figures(
     location_y INT NOT NULL DEFAULT 0,
 
     x_axis_label VARCHAR(255) NULL,
-    x_axis_label VARCHAR(255) NULL,
+    y_axis_label VARCHAR(255) NULL,
     
     date_created TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
 
@@ -70,12 +69,6 @@ CREATE TABLE figures(
         REFERENCES departments(dep_id)
         ON DELETE RESTRICT,
 
-    CONSTRAINT fk_figure_csv
-        FOREIGN KEY (csv_id)
-        REFERENCES `CSV_File`(csv_id)
-        ON DELETE SET NULL,
-
-    INDEX idx__figure_csv (csv_id)
     INDEX idx_figure_department (dep_id)
 );
 
