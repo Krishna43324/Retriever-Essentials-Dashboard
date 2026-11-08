@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create Chart</title>
+<link rel="stylesheet" href="/frontend/style.css">
+<body>
+
+<p> Instructions: Specify the exact name of the entire dataset (Retrievers Essentials Department Student Impact Data) that you previously created. 
+    Only after you specify a valid name and submit the 'Dataset Name' button will you be able to select the columns.</p>
+
+
+
+<div class="dataset">
+    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" />
+    <button onclick="specifyDatasetName()">Submit Dataset Name</button>
+    <label for="columnDropdown">Choose a column:</label>
+    <select id="columnDropdown" name="selected_item">
+        <option value="" disabled selected>Loading options...</option>
+    </select>
+</div>
+
+<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
+<script src="js/createChart.js"></script>
+
+
+</body>
+</html>

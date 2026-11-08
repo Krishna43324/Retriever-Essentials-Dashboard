@@ -25,9 +25,12 @@
     <div class="table-wrap"><table><thead><tr><th>Name</th><th>Grade</th><th>Department</th><th>GPA</th><th>Attendance</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
   </section>
 </main>
-<button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
-<button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
-<button onClick="triggerDeleteDataPage()" type="button" id="DeleteData"> Delete Data</button>
+<div class="dashboard-actions">
+  <button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
+  <button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
+  <button onClick="triggerDeleteDataPage()" type="button" id="DeleteData"> Delete Data</button>
+  <button onClick="triggerCreateChartPage()" type="button" id="CreateChart"> Create Chart</button>
+</div>
 <script src="/frontend/js/dashboard.js"></script>
 </body >
 </html>
