@@ -3,6 +3,7 @@ from pathlib import Path
 import bcrypt
 from CSV_uploader import CSVUploader
 from CSV_validator import CSV_validator
+import mysql.connector
 
 curr_file = Path(__file__).resolve()
 project_root = curr_file.parent.parent
@@ -14,6 +15,14 @@ app = Flask(
     template_folder=str(frontend_dir),
     static_folder=str(frontend_dir)
     )
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Password1!",
+    database="retriever_dashboard"
+)
+print("Connected to Database:", db.is_connected())
 
 @app.route('/')
 def pushToLoginPage():
@@ -67,6 +76,15 @@ def createAccount():
 def deleteData():
     datasetName = request.get_json().get('datasetName')
 
+@app.route('/create-chart', methods=['POST'])
+def retrieveDataSet():
+    data = request.get_json()
+    action = data.get('action')
+
+    
+
+    if action == 'get_columns':
+        print(5)
 
 if __name__ == '__main__':
     app.run(debug=True)

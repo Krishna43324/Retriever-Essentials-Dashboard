@@ -57,6 +57,10 @@ function triggerCreateAccountPage() {
     window.location.href = '/frontend/CreateAccount.html';
 }
 
+function triggerCreateChartPage() {
+    window.location.href = '/frontend/CreateChart.html';
+}
+
 const sel = document.getElementById("dept");
 ["All", ...new Set(DATA.students.map(s => s.dept))].forEach(d => sel.add(new Option(d === "All" ? "All departments" : d, d)));
 sel.addEventListener("change", render);
