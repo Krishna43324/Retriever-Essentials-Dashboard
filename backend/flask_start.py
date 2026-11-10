@@ -1,13 +1,23 @@
 from flask import Flask, redirect, render_template, request, url_for, jsonify
 from pathlib import Path
 import bcrypt
+from dotenv import load_dotenv
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 from CSV_uploader import CSVUploader
 from CSV_validator import CSV_validator
 import mysql.connector
+from mysql.connector import Error
+import os
+from database import check_database_connection, wait_for_database
+
 
 curr_file = Path(__file__).resolve()
 project_root = curr_file.parent.parent
 frontend_dir = project_root / 'frontend'
+
+# Load local development settings when a .env file exists. Docker Compose can
+# provide the same variables directly through the container environment.
+load_dotenv(project_root / ".env")
 
 
 app = Flask(
@@ -16,17 +26,21 @@ app = Flask(
     static_folder=str(frontend_dir)
     )
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Password1!",
-    database="retriever_dashboard"
-)
-print("Connected to Database:", db.is_connected())
-
 @app.route('/')
 def pushToLoginPage():
     return render_template('LoginPage.html')
+
+#connect to the DB
+@app.route("/health/db", methods=["GET"])
+def database_health():
+    """Small endpoint for checking that Flask can reach MySQL."""
+    try:
+        if check_database_connection():
+            return jsonify({"status": "ok", "database": "connected"}), 200
+        return jsonify({"status": "error", "database": "unavailable"}), 503
+    except Error:
+        app.logger.exception("Database health check failed")
+        return jsonify({"status": "error", "database": "unavailable"}), 503
 
 @app.route('/login', methods=['POST'])
 def login():
