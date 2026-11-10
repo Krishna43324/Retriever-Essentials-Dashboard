@@ -4,6 +4,7 @@ import bcrypt
 from CSV_uploader import CSVUploader
 from CSV_validator import CSV_validator
 import mysql.connector
+import os
 
 curr_file = Path(__file__).resolve()
 project_root = curr_file.parent.parent
@@ -17,10 +18,10 @@ app = Flask(
     )
 
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Password1!",
-    database="retriever_dashboard"
+    host=os.getenv("DB_HOST", "db"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME")
 )
 print("Connected to Database:", db.is_connected())
 
