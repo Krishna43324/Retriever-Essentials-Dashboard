@@ -1,76 +1,104 @@
+-- Retriever Essentials Dashboard
+-- MySQL 8.x initial schema.
+-- This script is executed automatically by the MySQL Docker image
+-- when its data directory is first initialized.
+
+CREATE DATABASE IF NOT EXISTS retriever_dashboard
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_0900_ai_ci;
 USE retriever_dashboard; -- Name of MySQL Server
 
 CREATE TABLE IF NOT EXISTS departments(
     dep_id INT AUTO_INCREMENT PRIMARY KEY, --primary key means each one will be unique
     dep_name VARCHAR(100) NOT NULL UNIQUE, --must have name to be saved
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    date_created TIMESTAMP Not NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (dep_id),
+    UNIQUE KEY uq_departments_dep_name (dep_name)
+)ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS users(
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL UNIQUE,
-    Password_Hash VARCHAR(255) NOT NULL, -- Store a password HASH
-
-    permissions ENUM('Viewer', 'Department_Manager', 'Admin') NOT NULL DEFAULT 'Viewer',
-    dep_id INT NULL,
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NULL,
+    password_Hash VARCHAR(255) NOT NULL, -- Store a password HASH
+    role ENUM('viewer', 'staff', 'admin') NOT NULL DEFAULT 'viewer',
+    dep_id INT USNIGNED NULL,
+    date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id),
+    UNIQUE KEY uq_users_username (username),
+    UNIQUE KEY uq_users_email (email),
+    KEY idx_users_dep_id (dep_id),
 
     CONSTRAINT fk_users_department
-    FOREIGN KEY (dep_id)
-    REFERENCES departments(dep_id)
-    ON DELETE SET NULL
-);
+        FOREIGN KEY (dep_id)
+        REFERENCES departments(dep_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+)ENGINE=InnoDB;
 
 
-CREATE TABLE csv_files(
-    csv_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE  IF NOT EXISTS csv_files(
+    csv_id INT USNIGNED NOT NULL AUTO_INCREMENT,
     file_Name VARCHAR(255) NOT NULL,
     file_Path VARCHAR(500) NOT NULL,
-    file_Size_KB INT UNSIGNED NOT NULL DEFAULT 0,
+    file_Size_bytes INT UNSIGNED NOT NULL DEFAULT 0,
     row_count INT UNSIGNED NOT NULL DEFAULT 0,
     upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    uploader_id  INT UNSIGNED NOT NULL,
+    uploader_id INT UNSIGNED NOT NULL,
     dep_id INT UNSIGNED NULL,
     shared BOOLEAN NOT NULL DEFAULT FALSE,
 
+    PRIMARY KEY (csv_id),
+    UNIQUE KEY uq_csv_files_file_path (file_path),
 
     CONSTRAINT fk_csv_uploader
         FOREIGN KEY (uploader_id)
         REFERENCES users(user_id)
+        ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
     CONSTRAINT fk_csv_department
         FOREIGN KEY (dep_id)
         REFERENCES departments(dep_id)
+        ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
-    INDEX idx_csv_uploader (uploader_id),
-    INDEX idx_csv_department (dep_id),
-    INDEX idx_csv_upload_date (upload_date)
-);
+    KEY idx_csv_files_uploader (uploader_id),
+    KEY idx_csv_files_department (dep_id),
+    KEY idx_csv_files_upload_date (upload_date)
+)ENGINE=InnoDB;
 
-CREATE TABLE figures(
-    figure_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS figures(
+    figure_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     dep_ID INT UNSIGNED NOT NULL,
-    chart_Type enum('bar', 'line', 'scatter', 'pie', 'doughnut') NOT NULL,
-    caption VARCHAR(500) NULL,
+    created_by INT UNSIGNED NOT NULL,
+    chart_Type ENUM('bar', 'line', 'scatter', 'pie', 'doughnut') NOT NULL,
+    caption VARCHAR(500) NULL, -- caption starts empty
+    date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- Coordinates for the figure's position in the UI.
     location_x INT NOT NULL DEFAULT 0,
     location_y INT NOT NULL DEFAULT 0,
-
     x_axis_label VARCHAR(255) NULL,
     y_axis_label VARCHAR(255) NULL,
     
-    date_created TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (figure_id),
 
     CONSTRAINT fk_figure_department
         FOREIGN KEY (dep_id)
         REFERENCES departments(dep_id)
+        ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
-    INDEX idx_figure_department (dep_id)
-);
+    CONSTRAINT fk_figures_creator
+        FOREIGN KEY (created_by)
+        REFERENCES users (user_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
+    KEY idx_figures_department (dep_id),
+    KEY idx_figures_created_by (created_by)
+)ENGINE=InnoDB;
 
 
 -- connect csv_files with figures (many to many relationship)
@@ -84,162 +112,19 @@ CREATE TABLE IF NOT EXISTS figure_datasets (
     CONSTRAINT fk_figure_datasets_figure
         FOREIGN KEY (figure_id)
         REFERENCES figures(figure_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
 
     CONSTRAINT fk_figure_datasets_csv
         FOREIGN KEY (csv_id)
         REFERENCES csv_files(csv_id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
 
-    INDEX idx_figure_datasets_csv (csv_id)
+    KEY idx_figure_datasets_csv (csv_id)
 );
 
-
--- #############################################################
---                        TESTING
--- #############################################################
-/*
--- Run these tests in SQL Workbench with the working database to test its functionalities
-
-
-USE retriever_dashboard;
-
--- ============================================================
--- TEST 1: CREATE A DEPARTMENT
--- ============================================================
-
+-- Seed the primary department. Re-running this statement is safe.
 INSERT INTO departments (dep_name)
 VALUES ('Retriever Essentials')
-ON DUPLICATE KEY UPDATE
-    dep_name = VALUES(dep_name);
-
-
--- Retrieve the department's actual ID.
-SET @dep_id = (
-    SELECT dep_id
-    FROM departments
-    WHERE dep_name = 'Retriever Essentials'
-);
-
-
--- ============================================================
--- TEST 2: CREATE A STAFF ACCOUNT
--- ============================================================
-
--- Demonstration only.
--- Replace the placeholder with a genuine password hash
--- generated by your backend before using the account.
-
-INSERT INTO users (
-    username,
-    email,
-    password_hash,
-    permissions,
-    dep_id
-)
-VALUES (
-    'retriever_staff',
-    'staff@example.edu',
-    'REPLACE_WITH_REAL_PASSWORD_HASH',
-    'Department_Manager',
-    @dep_id
-)
-ON DUPLICATE KEY UPDATE
-    email = VALUES(email);
-
-
--- Retrieve the staff member's actual ID.
-SET @user_id = (
-    SELECT user_id
-    FROM users
-    WHERE username = 'retriever_staff'
-);
-
-
--- ============================================================
--- TEST 3: REGISTER AN UPLOADED CSV FILE
--- ============================================================
-
-INSERT INTO csv_files (
-    file_name,
-    file_path,
-    file_size_kb,
-    row_count,
-    uploader_id,
-    dep_id,
-    shared
-)
-VALUES (
-    'monthly_statistics.csv',
-    'uploads/monthly_statistics.csv',
-    125,
-    100,
-    @user_id,
-    @dep_id,
-    FALSE
-);
-
-
--- Retrieve the uploaded dataset's ID.
-SET @csv_id = LAST_INSERT_ID();
-
-
--- ============================================================
--- TEST 4: CREATE A CHART
--- ============================================================
-
-INSERT INTO figures (
-    dep_id,
-    csv_id,
-    chart_type,
-    caption,
-    location_x,
-    location_y,
-    x_axis,
-    y_axis
-)
-VALUES (
-    @dep_id,
-    @csv_id,
-    'bar',
-    'Monthly service statistics',
-    0,
-    0,
-    'month',
-    'visits'
-);
-
-
--- ============================================================
--- TEST 5: VERIFY THE DATA
--- ============================================================
-
-SELECT
-    d.dep_name AS department,
-    u.username AS uploaded_by,
-    c.file_name,
-    c.row_count,
-    c.shared,
-    c.upload_date
-FROM csv_files AS c
-JOIN users AS u
-    ON c.uploader_id = u.user_id
-JOIN departments AS d
-    ON c.dep_id = d.dep_id;
-
-
--- Verify the chart configuration.
-SELECT
-    f.figure_id,
-    d.dep_name AS department,
-    f.chart_type,
-    f.caption,
-    f.x_axis,
-    f.y_axis,
-    c.file_name
-FROM figures AS f
-JOIN departments AS d
-    ON f.dep_id = d.dep_id
-LEFT JOIN csv_files AS c
-    ON f.csv_id = c.csv_id;
-    */
+ON DUPLICATE KEY UPDATE dep_name = VALUES(dep_name);
