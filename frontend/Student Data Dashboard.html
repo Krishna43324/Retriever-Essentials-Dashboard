@@ -13,6 +13,14 @@
   <h1>Student Data Dashboard</h1>
   <select id="dept" aria-label="Department filter"></select>
 </header>
+
+<div class="dashboard-actions">
+  <button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
+  <button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
+  <button onClick="triggerDeleteDataPage()" type="button" id="DeleteData"> Delete Data</button>
+  <button onClick="triggerCreateChartPage()" type="button" id="CreateChart"> Create Chart</button>
+</div>
+
 <main>
   <section class="kpis" id="kpis"></section>
   <section class="charts">
@@ -25,12 +33,6 @@
     <div class="table-wrap"><table><thead><tr><th>Name</th><th>Grade</th><th>Department</th><th>GPA</th><th>Attendance</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
   </section>
 </main>
-<div class="dashboard-actions">
-  <button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
-  <button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
-  <button onClick="triggerDeleteDataPage()" type="button" id="DeleteData"> Delete Data</button>
-  <button onClick="triggerCreateChartPage()" type="button" id="CreateChart"> Create Chart</button>
-</div>
 <script src="/frontend/js/dashboard.js"></script>
 </body >
 </html>
