@@ -5,31 +5,62 @@ Method = post is defining that it will send a POST request to backend.
 The if error stuff is a template tag. If the backend passes back an 'error' variable, this will
 display the specific error like "Invalid Password".
 -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Login Page</title>
-</head>
 <link rel="stylesheet" href="/frontend/style.css">
-<body>
+</head>
+<body class="form-page">
 
-<p> Regardless of whether you are an administrator or staff member, please login to view the dashboard. 
-    Your accesses will automatically enforce what functions you can do and what things you can do.</p>
+<div class="form-shell">
+    <div class="form-brand">
+        <span class="brand-mark">RE</span>
+        <span><strong>Retriever Essentials</strong><small>Basic Needs Impact Dashboard</small></span>
+    </div>
 
-<form class="upload-form" action="/login" method="post">
-    <label for="username">Account Username</label>
-    <input type="text" id="username" name="username" placeholder="Account Username" required />
-    <label for="password">Account Password</label>
-    <input type="password" id="password" name="password" placeholder="Account Password" required />
-    <button type="submit">Login</button>
-    {% if error %}
-        <p role="alert">{{ error }}</p>
-    {% endif %}
-</form>
+    <div class="form-card">
+        <h1>Welcome back</h1>
+        <p class="form-lead">Sign in to view the dashboard. Your account automatically controls which actions you can take.</p>
 
+        <form action="/login" method="post">
+            <div class="field">
+                <label for="username">Account Username</label>
+                <input type="text" id="username" name="username" placeholder="e.g., Bob145" autocomplete="username" required autofocus />
+            </div>
+
+            <div class="field">
+                <label for="password">Account Password</label>
+                <div class="password-wrap">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required />
+                    <button type="button" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Log In</button>
+
+            {% if error %}
+                <p class="form-error" role="alert">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div>
+
+    <p class="form-footer">UMBC Retriever Essentials · Authorized staff only</p>
+</div>
+
+<script>
+    //Show/Hide password toggle
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(btn.getAttribute('aria-controls'));
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.textContent = show ? 'Hide' : 'Show';
+            btn.setAttribute('aria-pressed', show);
+        });
+    });
+</script>
 </body>
 </html>
