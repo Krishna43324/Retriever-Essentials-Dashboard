@@ -2,7 +2,6 @@ from flask import Flask, redirect, render_template, request, url_for, jsonify
 from pathlib import Path
 import bcrypt
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, url_for
 from CSV_uploader import CSVUploader
 from CSV_validator import CSV_validator
 import mysql.connector
