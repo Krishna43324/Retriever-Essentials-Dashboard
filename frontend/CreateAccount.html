@@ -5,19 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Create Account</title>
 <link rel="stylesheet" href="/frontend/style.css">
-<body>
+</head>
+<body class="form-page">
 
-<p> Instructions: You are an administrator. Specify the username and password of the account that you want to create. 
-    Give these credentials to a staff member of each department.</p>
+<div class="form-shell">
+    <div class="form-brand">
+        <span class="brand-mark">RE</span>
+        <span><strong>Retriever Essentials</strong><small>Administrator tools</small></span>
+    </div>
 
-<div class="upload-form">
-    <input type="text" id="username" placeholder="Account Username (for example, Bob145)" />
-    <input type="text" id="password" placeholder="Account Password" />
-    <button onclick="createAccount()">Create Account</button>
+    <div class="form-card">
+        <h1>Create an account</h1>
+        <p class="form-lead">Set up login credentials for a department staff member.</p>
+
+        <div class="form-note">
+            <span aria-hidden="true">ⓘ</span>
+            <div>You are an administrator. Specify the username and password of the account you want to create,
+            then give these credentials to a staff member of each department.</div>
+        </div>
+
+        <div class="field">
+            <label for="username">Account Username</label>
+            <input type="text" id="username" placeholder="e.g., Bob145" autocomplete="off" />
+        </div>
+
+        <div class="field">
+            <label for="password">Account Password</label>
+            <div class="password-wrap">
+                <input type="password" id="password" placeholder="Choose a password" autocomplete="new-password" />
+                <button type="button" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="createAccount()">Create Account</button>
+            <button class="btn btn-ghost" onClick="returnToDashboard()" type="button" id="returnDashboard">← Return to Dashboard</button>
+        </div>
+    </div>
 </div>
 
-<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
 <script src="js/createAccount.js"></script>
-
+<script>
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(btn.getAttribute('aria-controls'));
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.textContent = show ? 'Hide' : 'Show';
+            btn.setAttribute('aria-pressed', show);
+        });
+    });
+</script>
 </body>
 </html>
