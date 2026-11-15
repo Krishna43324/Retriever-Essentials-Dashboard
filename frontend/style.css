@@ -142,17 +142,26 @@ th, td {
 
 /* =====================================================================
    FORM PAGES (Login, Create Account, Upload/Create Table, Delete, Chart)
-   Scoped under body.form-page (dashboard is not affected)
+   Scoped under body.form-page so the dashboard is not affected.
    ===================================================================== */
 body.form-page {
+    /* UMBC palette (form pages only; dashboard colors are untouched) */
+    --umbc-gold: #fdb515;
+    --umbc-gold-dark: #e09f00;
+    --umbc-gold-pale: #fff7e0;
+    --umbc-gold-line: #f3dfa2;
+    --umbc-black: #1a1a1a;
+    --umbc-gray: #5f6368;
+    --umbc-gray-pale: #f3f3f3;
+
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
     background:
-        radial-gradient(900px 500px at 10% -10%, rgb(59 111 245 / 14%), transparent 60%),
-        radial-gradient(700px 400px at 100% 110%, rgb(31 157 107 / 12%), transparent 60%),
+        radial-gradient(900px 500px at 10% -10%, rgb(253 181 21 / 20%), transparent 60%),
+        radial-gradient(700px 400px at 100% 110%, rgb(26 26 26 / 8%), transparent 60%),
         var(--bg);
 }
 
@@ -174,17 +183,23 @@ body.form-page {
     margin-bottom: 20px;
 }
 
-.form-brand .brand-mark {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), #6c93ff);
-    color: #fff;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    display: grid;
-    place-items: center;
-    box-shadow: 0 6px 16px rgb(59 111 245 / 35%);
+.form-brand .brand-logo {
+    height: 48px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Shown only if /frontend/images/umbc-logo.png is missing */
+.form-brand .brand-fallback {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--umbc-black);
+    color: var(--umbc-gold);
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1;
 }
 
 .form-brand strong {
@@ -201,6 +216,7 @@ body.form-page {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 16px;
+    border-top: 5px solid var(--umbc-gold);
     padding: 32px;
     box-shadow: 0 12px 40px rgb(28 36 51 / 10%);
     animation: form-rise 0.35s ease-out;
@@ -229,11 +245,11 @@ body.form-page {
     gap: 10px;
     padding: 12px 14px;
     margin: 0 0 22px;
-    background: #eef3ff;
-    border: 1px solid #d5e0ff;
-    border-left: 4px solid var(--accent);
+    background: var(--umbc-gold-pale);
+    border: 1px solid var(--umbc-gold-line);
+    border-left: 4px solid var(--umbc-gold);
     border-radius: 8px;
-    color: #2b3a63;
+    color: #3a3a3a;
     font-size: 14px;
     line-height: 1.5;
 }
@@ -278,8 +294,8 @@ body.form-page {
 .form-card select:focus {
     outline: none;
     background: #fff;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgb(59 111 245 / 15%);
+    border-color: var(--umbc-black);
+    box-shadow: 0 0 0 4px rgb(253 181 21 / 40%);
 }
 
 /* Password show/hide wrapper */
@@ -300,7 +316,7 @@ body.form-page {
     border: none;
     border-radius: 6px;
     background: transparent;
-    color: var(--accent);
+    color: var(--umbc-black);
     font: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -308,7 +324,7 @@ body.form-page {
 }
 
 .password-toggle:hover {
-    background: #eef3ff;
+    background: var(--umbc-gold-pale);
 }
 
 /* File picker */
@@ -326,8 +342,8 @@ body.form-page {
 
 .file-drop:hover,
 .file-drop:focus-within {
-    border-color: var(--accent);
-    background: #f2f6ff;
+    border-color: var(--umbc-gold);
+    background: var(--umbc-gold-pale);
 }
 
 .file-drop strong {
@@ -341,6 +357,35 @@ body.form-page {
     max-width: 100%;
     font: inherit;
     font-size: 13px;
+}
+
+/* Drag & drop states */
+.file-drop.is-dragover {
+    border-color: var(--umbc-gold);
+    border-style: solid;
+    background: var(--umbc-gold-pale);
+    box-shadow: 0 0 0 4px rgb(253 181 21 / 35%);
+}
+
+.file-drop.has-file {
+    border-color: var(--umbc-black);
+    border-style: solid;
+    background: var(--umbc-gray-pale);
+}
+
+.file-drop .file-error {
+    display: block;
+    margin-top: 8px;
+    color: var(--bad);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.file-drop .drop-icon {
+    display: block;
+    margin: 0 auto 6px;
+    font-size: 26px;
+    line-height: 1;
 }
 
 /* Buttons */
@@ -364,13 +409,13 @@ body.form-page {
 }
 
 .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 6px 16px rgb(59 111 245 / 30%);
+    background: var(--umbc-gold);
+    color: var(--umbc-black);
+    box-shadow: 0 6px 16px rgb(253 181 21 / 35%);
 }
 
 .btn-primary:hover {
-    filter: brightness(1.06);
+    background: var(--umbc-gold-dark);
 }
 
 .btn-danger {
@@ -390,12 +435,13 @@ body.form-page {
 }
 
 .btn-ghost:hover {
-    background: #f4f6fa;
+    background: var(--umbc-gray-pale);
+    border-color: var(--umbc-gray);
 }
 
 .btn:focus-visible,
 .password-toggle:focus-visible {
-    outline: 3px solid rgb(59 111 245 / 40%);
+    outline: 3px solid rgb(253 181 21 / 70%);
     outline-offset: 2px;
 }
 

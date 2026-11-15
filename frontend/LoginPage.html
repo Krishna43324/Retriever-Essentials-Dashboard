@@ -17,7 +17,8 @@ display the specific error like "Invalid Password".
 
 <div class="form-shell">
     <div class="form-brand">
-        <span class="brand-mark">RE</span>
+        <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="brand-fallback" hidden>UMBC</span>
         <span><strong>Retriever Essentials</strong><small>Basic Needs Impact Dashboard</small></span>
     </div>
 
@@ -51,7 +52,7 @@ display the specific error like "Invalid Password".
 </div>
 
 <script>
-    //Show/Hide password toggle
+    // Show/Hide password toggle
     document.querySelectorAll('.password-toggle').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var input = document.getElementById(btn.getAttribute('aria-controls'));

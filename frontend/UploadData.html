@@ -10,7 +10,8 @@
 
 <div class="form-shell wide">
     <div class="form-brand">
-        <span class="brand-mark">RE</span>
+        <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="brand-fallback" hidden>UMBC</span>
         <span><strong>Retriever Essentials</strong><small>Create a dataset table</small></span>
     </div>
 
@@ -48,10 +49,12 @@
 
         <div class="field">
             <label for="dataUpload">CSV file</label>
-            <label class="file-drop" for="dataUpload">
-                <strong>Choose a .csv file</strong>
+            <label class="file-drop" id="dropZone" for="dataUpload">
+                <span class="drop-icon" aria-hidden="true">⇪</span>
+                <strong>Drag &amp; drop your CSV here, or click to browse</strong>
                 <span id="fileName">No file selected</span>
                 <input type="file" id="dataUpload" accept=".csv" />
+                <span class="file-error" id="fileError" role="alert" hidden></span>
             </label>
         </div>
 
@@ -64,11 +67,70 @@
 
 <script src="js/uploadData.js"></script>
 <script>
-    // Show the chosen file name inside the drop area
-    document.getElementById('dataUpload').addEventListener('change', function (e) {
-        var f = e.target.files[0];
-        document.getElementById('fileName').textContent = f ? f.name : 'No file selected';
-    });
+    // Drag & drop + click-to-browse for the CSV file
+    (function () {
+        var zone = document.getElementById('dropZone');
+        var input = document.getElementById('dataUpload');
+        var nameEl = document.getElementById('fileName');
+        var errEl = document.getElementById('fileError');
+
+        function showFile() {
+            var f = input.files[0];
+            nameEl.textContent = f ? f.name : 'No file selected';
+            zone.classList.toggle('has-file', !!f);
+        }
+
+        function showError(msg) {
+            errEl.textContent = msg;
+            errEl.hidden = !msg;
+        }
+
+        // Stop the browser from opening a file that is dropped outside the zone
+        ['dragover', 'drop'].forEach(function (evt) {
+            window.addEventListener(evt, function (e) { e.preventDefault(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.add('is-dragover');
+            });
+        });
+
+        ['dragleave', 'dragend'].forEach(function (evt) {
+            zone.addEventListener(evt, function () {
+                zone.classList.remove('is-dragover');
+            });
+        });
+
+        zone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            zone.classList.remove('is-dragover');
+            showError('');
+
+            var files = e.dataTransfer.files;
+            if (!files || !files.length) return;
+            if (files.length > 1) { showError('Please drop only one file.'); return; }
+
+            var file = files[0];
+            if (!/\.csv$/i.test(file.name)) {
+                showError('Only .csv files are supported.');
+                return;
+            }
+
+            // Put the dropped file into the real input so handleUpload() finds it
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            showFile();
+        });
+
+        // Normal "click to browse" path
+        input.addEventListener('change', function () {
+            showError('');
+            showFile();
+        });
+    })();
 </script>
 </body>
 </html>
