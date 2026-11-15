@@ -486,3 +486,211 @@ body.form-page {
     .form-card { animation: none; }
     .btn, .form-card input { transition: none; }
 }
+
+
+/* =====================================================================
+   DASHBOARD (body.dashboard-page): UMBC palette, carousel, stat cards
+   ===================================================================== */
+body.dashboard-page {
+    --gold: #fdb515;
+    --gold-dark: #e09f00;
+    --gold-pale: #fff7e0;
+    --gold-line: #f3dfa2;
+    --black: #1a1a1a;
+    --gray: #5f6368;
+    --gray-pale: #f3f3f3;
+    --bg: #f6f6f4;
+    --muted: #666b73;
+}
+
+/* ---- Header ---- */
+.dash-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--card);
+    border-bottom: 3px solid var(--gold);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.dash-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+.dash-brand .brand-logo { height: 46px; width: auto; max-width: 170px; object-fit: contain; display: block; }
+
+.dash-brand .brand-fallback {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--black);
+    color: var(--gold);
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.dash-titles { min-width: 0; padding-left: 14px; border-left: 1px solid var(--line); }
+.dash-titles small { display: block; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; }
+.dash-titles h1 { margin: 2px 0 0; font-size: 22px; line-height: 1.2; animation: title-in 0.25s ease-out; }
+
+@keyframes title-in {
+    from { opacity: 0; transform: translateX(8px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.dash-nav { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.section-count { min-width: 44px; text-align: center; color: var(--muted); font-weight: 700; font-size: 14px; }
+
+.arrow {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--black);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.arrow:hover:not(:disabled) { background: var(--gold); border-color: var(--gold); }
+.arrow:disabled { opacity: 0.35; cursor: default; }
+.arrow:focus-visible, .tab:focus-visible, .linklike:focus-visible, .carousel:focus-visible {
+    outline: 3px solid rgb(253 181 21 / 70%);
+    outline-offset: 2px;
+}
+
+.sample-pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--gray-pale);
+    border: 1px solid var(--line);
+    color: var(--gray);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ---- Tabs ---- */
+.dash-tabs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px 0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tab:hover { border-color: var(--gold); }
+.tab[aria-current="true"] { background: var(--black); border-color: var(--black); color: var(--gold); }
+
+/* ---- Carousel ---- */
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    outline-offset: 4px;
+}
+
+.carousel::-webkit-scrollbar, .dash-tabs::-webkit-scrollbar { display: none; }
+
+.slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    padding: 4px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+.slide-lead { margin: 0 0 16px; color: var(--muted); line-height: 1.5; max-width: 780px; }
+
+/* ---- Cards, KPIs, charts ---- */
+.dashboard-page .card h2 { margin: 0 0 12px; font-size: 16px; }
+
+.kpi { border-top: 3px solid var(--gold); }
+.kpi .label { color: var(--muted); font-size: 13px; }
+.kpi .value { margin-top: 4px; font-size: 30px; font-weight: 700; }
+.kpi .sub { margin-top: 2px; color: var(--muted); font-size: 12px; }
+
+.dashboard-page .kpis { margin-bottom: 0; }
+.dashboard-page .charts { margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+.caption {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.split { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+/* ---- Comments ---- */
+.quote { margin: 0 0 12px; padding: 10px 14px; border-left: 4px solid var(--gold); background: var(--gray-pale); border-radius: 0 8px 8px 0; }
+.quote:last-of-type { margin-bottom: 0; }
+.quote p { margin: 0 0 4px; line-height: 1.5; }
+.quote cite { color: var(--muted); font-size: 12px; font-style: normal; }
+.fineprint { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
+
+/* ---- Tables ---- */
+.dashboard-page th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+.dashboard-page .table-wrap { overflow-x: auto; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.visit-bar { display: inline-block; height: 8px; margin-right: 8px; border-radius: 4px; background: var(--gold); vertical-align: middle; }
+
+.linklike { padding: 0; border: none; background: none; color: var(--black); font: inherit; font-weight: 700; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; cursor: pointer; }
+.linklike:hover { background: var(--gold-pale); }
+
+/* ---- Gentle "could improve" note ---- */
+.notes { background: var(--gray-pale); border-style: dashed; box-shadow: none; }
+.notes h2 { color: var(--gray); font-size: 14px; }
+.notes ul { margin: 0; padding-left: 18px; color: var(--text); font-size: 14px; line-height: 1.6; }
+
+/* ---- Dashboard buttons in the UMBC palette ---- */
+.dashboard-page .dashboard-actions #uploadCSV { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.dashboard-page .dashboard-actions button:hover { filter: none; background: var(--gray-pale); }
+.dashboard-page .dashboard-actions #uploadCSV:hover { background: var(--gold-dark); }
+
+@media (max-width: 640px) {
+    .dash-header { padding: 10px 14px; flex-wrap: wrap; }
+    .dash-titles h1 { font-size: 18px; }
+    .dash-brand .brand-logo { height: 36px; }
+    .sample-pill { display: none; }
+    .dash-tabs, main { padding-left: 14px; padding-right: 14px; }
+    .dashboard-page .charts { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) { .dash-titles h1 { animation: none; } }
+
+
+/* Make sure a logo that fails to load stays hidden (display rules above would otherwise override [hidden]) */
+.brand-logo[hidden], .brand-fallback[hidden] { display: none !important; }
+
+/* Dashboard tweaks: five KPI cards fit on one row, left-aligned office links */
+.dashboard-page .kpis { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.linklike { text-align: left; }
+
+/* Department slides have four charts: show them as a 2 x 2 grid */
+.dashboard-page .charts.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 800px) { .dashboard-page .charts.two { grid-template-columns: 1fr; } }
