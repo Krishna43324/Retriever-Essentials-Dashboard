@@ -5,25 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Create Chart</title>
 <link rel="stylesheet" href="/frontend/style.css">
-<body>
+</head>
+<body class="form-page">
 
-<p> Instructions: Specify the exact name of the entire dataset (Retrievers Essentials Department Student Impact Data) that you previously created. 
-    Only after you specify a valid name and submit the 'Dataset Name' button will you be able to select the columns.</p>
+<div class="form-shell">
+    <div class="form-brand">
+        <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="brand-fallback" hidden>UMBC</span>
+        <span><strong>Retriever Essentials</strong><small>Chart builder</small></span>
+    </div>
 
+    <div class="form-card">
+        <h1>Create a chart</h1>
+        <p class="form-lead">Pick a dataset, then choose which column to chart.</p>
 
+        <div class="form-note">
+            <span aria-hidden="true">ⓘ</span>
+            <div>Enter the exact name of a dataset you previously created. Only after you submit a valid
+            name will you be able to select a column.</div>
+        </div>
 
-<div class="dataset">
-    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" />
-    <button onclick="retrieveData()">Submit Dataset Name</button>
-    <label for="columnDropdown">Choose a column:</label>
-    <select id="columnDropdown" name="selected_item">
-        <option value="" disabled selected>Loading options...</option>
-    </select>
+        <div class="dataset">
+            <div class="field">
+                <label for="datasetName">Dataset name</label>
+                <input type="text" id="datasetName" placeholder="e.g., Retrievers Essentials Department Student Impact Data" />
+            </div>
+
+            <button class="btn btn-primary" onclick="retrieveData()">Submit Dataset Name</button>
+
+            <div class="field" style="margin-top:18px">
+                <label for="columnDropdown">Choose a column</label>
+                <select id="columnDropdown" name="selected_item">
+                    <option value="" disabled selected>Loading options...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-ghost" onClick="returnToDashboard()" type="button" id="returnDashboard">← Return to Dashboard</button>
+        </div>
+    </div>
 </div>
 
-<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
 <script src="js/createChart.js"></script>
-
-
 </body>
 </html>
