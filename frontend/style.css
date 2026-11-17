@@ -109,7 +109,7 @@ th, td {
     margin: 0 auto 24px;
     padding: 0 24px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -123,19 +123,4 @@ th, td {
     font: inherit;
     font-weight: 600;
     cursor: pointer;
-}
-
-.dashboard-actions #uploadCSV {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-}
-
-.dashboard-actions #DeleteData {
-    color: var(--bad);
-    border-color: var(--bad);
-}
-
-.dashboard-actions button:hover {
-    filter: brightness(0.96);
 }
