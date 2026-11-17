@@ -5,31 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Upload Data</title>
 <link rel="stylesheet" href="/frontend/style.css">
-<style>
-    .upload-form input {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 6px;
-    }
-</style>
+</head>
+<body class="form-page">
 
-<body>
+<div class="form-shell wide">
+    <div class="form-brand">
+        <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="brand-fallback" hidden>UMBC</span>
+        <span><strong>Retriever Essentials</strong><small>Create a dataset table</small></span>
+    </div>
 
-<p> Instructions: Specify the exact name of the entire dataset (Retrievers Essentials Department Student Impact Data) in the "Name" field. 
-    Download your data in whatever tool (Excel, Google Spreadsheets, etc) as a CSV file. Upload the file into the "File" button.</p>
+    <div class="form-card">
+        <h1>Upload data</h1>
+        <p class="form-lead">Turn a CSV file into a dataset table for the dashboard.</p>
 
-<div class="upload-form">
-    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" /> <br>
-    <input type="text" id="fieldsToOmit" placeholder="Fields that you want to omit from being stored in the database separated by commas with no spaces for the commas. (e.g., StudentID,SSN,Password)" /> <br>
-    <input type="text" id="columnOrRow" placeholder="Type 'Row' or 'Column' if you want to omit the entire column or entire row. If you specified that
-    you want to omit StudentID, and the StudentID header is the top of the spreadsheet and the IDs of each entry are below, you would type 'Column' here." /> <br>
-    <input type="file" id="dataUpload" accept=".csv" />
-    <button onclick="handleUpload()">Upload Data</button> <br> <br> <br>
+        <div class="form-note">
+            <span aria-hidden="true">ⓘ</span>
+            <div>Enter the exact name of the dataset (Retrievers Essentials Department Student Impact Data).
+            Export your data from Excel, Google Sheets, etc. as a CSV file, then choose it below.</div>
+        </div>
+
+        <div class="field">
+            <label for="datasetName">Dataset name</label>
+            <input type="text" id="datasetName" placeholder="e.g., Retrievers Essentials Department Student Impact Data" />
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label for="fieldsToOmit">Fields to omit</label>
+                <input type="text" id="fieldsToOmit" placeholder="StudentID,SSN,Password" />
+                <p class="hint">Comma-separated, no spaces. These are not stored in the database.</p>
+            </div>
+
+            <div class="field">
+                <label for="columnOrRow">Omit entire…</label>
+                <select id="columnOrRow">
+                    <option value="Column" selected>Column</option>
+                    <option value="Row">Row</option>
+                </select>
+                <p class="hint">Choose “Column” if the field name (e.g., StudentID) is a header with its values below it.</p>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="dataUpload">CSV file</label>
+            <label class="file-drop" id="dropZone" for="dataUpload">
+                <span class="drop-icon" aria-hidden="true">⇪</span>
+                <strong>Drag &amp; drop your CSV here, or click to browse</strong>
+                <span id="fileName">No file selected</span>
+                <input type="file" id="dataUpload" accept=".csv" />
+                <span class="file-error" id="fileError" role="alert" hidden></span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="handleUpload()">Upload Data</button>
+            <button class="btn btn-ghost" onClick="returnToDashboard()" type="button" id="returnDashboard">← Return to Dashboard</button>
+        </div>
+    </div>
 </div>
 
-<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
 <script src="js/uploadData.js"></script>
+<script>
+    // Drag & drop + click-to-browse for the CSV file
+    (function () {
+        var zone = document.getElementById('dropZone');
+        var input = document.getElementById('dataUpload');
+        var nameEl = document.getElementById('fileName');
+        var errEl = document.getElementById('fileError');
 
+        function showFile() {
+            var f = input.files[0];
+            nameEl.textContent = f ? f.name : 'No file selected';
+            zone.classList.toggle('has-file', !!f);
+        }
 
+        function showError(msg) {
+            errEl.textContent = msg;
+            errEl.hidden = !msg;
+        }
+
+        // Stop the browser from opening a file that is dropped outside the zone
+        ['dragover', 'drop'].forEach(function (evt) {
+            window.addEventListener(evt, function (e) { e.preventDefault(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.add('is-dragover');
+            });
+        });
+
+        ['dragleave', 'dragend'].forEach(function (evt) {
+            zone.addEventListener(evt, function () {
+                zone.classList.remove('is-dragover');
+            });
+        });
+
+        zone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            zone.classList.remove('is-dragover');
+            showError('');
+
+            var files = e.dataTransfer.files;
+            if (!files || !files.length) return;
+            if (files.length > 1) { showError('Please drop only one file.'); return; }
+
+            var file = files[0];
+            if (!/\.csv$/i.test(file.name)) {
+                showError('Only .csv files are supported.');
+                return;
+            }
+
+            // Put the dropped file into the real input so handleUpload() finds it
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            showFile();
+        });
+
+        // Normal "click to browse" path
+        input.addEventListener('change', function () {
+            showError('');
+            showFile();
+        });
+    })();
+</script>
 </body>
 </html>

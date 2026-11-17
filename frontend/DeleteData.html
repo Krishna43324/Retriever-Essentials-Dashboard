@@ -5,22 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Delete Data</title>
 <link rel="stylesheet" href="/frontend/style.css">
-<body>
+</head>
+<body class="form-page">
 
-<p> Instructions: Specify the exact name of the entire dataset (Retrievers Essentials Department Student Impact Data) that you previously entered
-    in the "Name" field. The application/system will check your permissions. 
-    If you have the permission, the dataset will be removed.</p>
+<div class="form-shell">
+    <div class="form-brand">
+        <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="brand-fallback" hidden>UMBC</span>
+        <span><strong>Retriever Essentials</strong><small>Dataset management</small></span>
+    </div>
 
+    <div class="form-card">
+        <h1>Delete data</h1>
+        <p class="form-lead">Permanently remove a dataset you previously uploaded.</p>
 
+        <div class="form-note">
+            <span aria-hidden="true">ⓘ</span>
+            <div>Enter the exact dataset name you used when uploading. The system will check your permissions;
+            if you have access, the dataset will be removed.</div>
+        </div>
 
-<div class="dataset">
-    <input type="text" id="datasetName" placeholder="Dataset name (e.g., Retrievers Essentials Department Student Impact Data)" />
-    <button onclick="deleteData()">Delete Data</button>
+        <div class="dataset">
+            <div class="field">
+                <label for="datasetName">Dataset name</label>
+                <input type="text" id="datasetName" placeholder="e.g., Retrievers Essentials Department Student Impact Data" />
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-danger" onclick="deleteData()">Delete Data</button>
+            <button class="btn btn-ghost" onClick="returnToDashboard()" type="button" id="returnDashboard">← Return to Dashboard</button>
+        </div>
+    </div>
 </div>
 
-<button onClick="returnToDashboard()" type="button" id="returnDashboard"> Return to Dashboard</button>
 <script src="js/deleteData.js"></script>
-
-
 </body>
 </html>
