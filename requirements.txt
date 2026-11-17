@@ -2,3 +2,5 @@ Flask>=3.0,<4.0
 bcrypt>=4.1,<6.0
 mysql-connector-python>=8.3,<10.0
 python-dotenv>=1.0,<2.0
+# Production WSGI server used inside Docker (not needed/available on Windows).
+gunicorn>=22.0,<24.0; sys_platform != "win32"
