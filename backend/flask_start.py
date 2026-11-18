@@ -211,6 +211,7 @@ def createAccount(user):
     data = request.get_json(silent=True) or {}
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
+    userrole = data.get("role")
 
     if not username or not password:
         return jsonify(success=False, message="Enter both a username and password."), 400
@@ -223,7 +224,7 @@ def createAccount(user):
 
     hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     try:
-        database.create_user(username, hashed, role="staff", dep_id=session.get("dep_id"))
+        database.create_user(username, hashed, role=userrole, dep_id=session.get("dep_id"))
     except IntegrityError:
         return jsonify(success=False, message=f"The username '{username}' is already taken."), 409
     except Error:
