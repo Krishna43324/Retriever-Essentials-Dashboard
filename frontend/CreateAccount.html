@@ -38,6 +38,15 @@
             </div>
         </div>
 
+        <div class="field">
+            <label for="role">Account role</label>
+            <select id="role" name="role" required>
+                <option value="staff" selected>Staff</option>
+                <option value="viewer">Viewer</option>
+                <option value="admin">Administrator</option>
+            </select>
+        </div>
+
         <div class="form-actions">
             <button class="btn btn-primary" onclick="createAccount()">Create Account</button>
             <button class="btn btn-ghost" onClick="returnToDashboard()" type="button" id="returnDashboard">← Return to Dashboard</button>

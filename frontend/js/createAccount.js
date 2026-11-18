@@ -6,6 +6,7 @@ function createAccount() {
     // Read the VALUES of the inputs (not the elements themselves)
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value
 
     if (!username || !password) {
         alert("Enter both a username and password.");
@@ -15,7 +16,7 @@ function createAccount() {
     fetch('/create-account', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, role })
     })
     .then(response => response.json())
     .then(data => {
