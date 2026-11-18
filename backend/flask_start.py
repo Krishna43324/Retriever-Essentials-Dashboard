@@ -212,6 +212,8 @@ def createAccount(user):
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
     userrole = data.get("role")
+    if userrole not in User.VALID_ROLES:
+        return jsonify(success=False, message="Choose a valid account role."), 400
 
     if not username or not password:
         return jsonify(success=False, message="Enter both a username and password."), 400
