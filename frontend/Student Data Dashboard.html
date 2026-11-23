@@ -6,14 +6,29 @@
 <title>Student Data Dashboard</title>
 <link rel="stylesheet" href="/frontend/style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<!-- <script src="js/chart.min.js"></script> -->
 </head>
-<body>
-<header>
-  <h1>Student Data Dashboard</h1>
-  <select id="dept" aria-label="Department filter"></select>
+<body class="dashboard-page">
+
+<header class="dash-header">
+  <div class="dash-brand">
+    <img class="brand-logo" src="/frontend/images/umbc-logo.png" alt="University of Maryland, Baltimore County"
+         onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+    <span class="brand-fallback" hidden>UMBC</span>
+    <div class="dash-titles">
+      <small id="sectionKicker">General statistics</small>
+      <h1 id="sectionTitle" aria-live="polite">Campus Overview</h1>
+    </div>
+  </div>
+
+  <div class="dash-nav">
+    <span class="sample-pill" id="samplePill" hidden>Sample data</span>
+    <button type="button" id="prevBtn" class="arrow" aria-label="Previous section">&#8249;</button>
+    <span class="section-count" id="sectionCount">1 / 5</span>
+    <button type="button" id="nextBtn" class="arrow" aria-label="Next section">&#8250;</button>
+  </div>
 </header>
 
+<nav class="dash-tabs" id="tabs" aria-label="Dashboard sections"></nav>
 <div class="dashboard-actions">
   <button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
   <button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
@@ -22,17 +37,17 @@
 </div>
 
 <main>
-  <section class="kpis" id="kpis"></section>
-  <section class="charts">
-    <div class="card"><h2>Enrollment by grade</h2><div class="chart-box"><canvas id="c1"></canvas></div></div>
-    <div class="card"><h2>Attendance rate (monthly)</h2><div class="chart-box"><canvas id="c2"></canvas></div></div>
-    <div class="card"><h2>Students by status</h2><div class="chart-box"><canvas id="c3"></canvas></div></div>
-  </section>
-  <section class="card">
-    <h2>Students</h2>
-    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Grade</th><th>Department</th><th>GPA</th><th>Attendance</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
-  </section>
+  <div class="carousel" id="carousel" tabindex="0" role="region" aria-roledescription="carousel"
+       aria-label="Dashboard sections. Swipe, scroll sideways, or use the arrow keys."></div>
 </main>
+
+<div class="dashboard-actions">
+  <button onClick="triggerUploadDataPage()" type="button" id="uploadCSV"> Upload CSV</button>
+  <button onClick="triggerCreateAccountPage()" type="button" id="CreateAccount"> Create Account</button>
+  <button onClick="triggerDeleteDataPage()" type="button" id="DeleteData"> Delete Data</button>
+  <button onClick="triggerCreateChartPage()" type="button" id="CreateChart"> Create Chart</button>
+</div>
+
 <script src="/frontend/js/dashboard.js"></script>
-</body >
+</body>
 </html>

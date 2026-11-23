@@ -1,0 +1,11 @@
+.env
+.git
+.vscode
+.venv
+venv
+__pycache__
+*.pyc
+backend/uploads
+uploads
+backend/*_test.py
+README.md
