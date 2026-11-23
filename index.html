@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="UMBC Retriever Essentials Basic Needs Impact Dashboard demo">
+  <title>Retriever Essentials Dashboard</title>
+  <meta name="viewport" content="width-device-width, initial-scale=1.0"
+  <link rel="stylesheet" href="style.css">
+  <script src="js/chart.min.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="Student%20Data%20Dashboard.html" aria-label="Retriever Essentials dashboard home">
+      <span class="brand-mark">RE</span><span><strong>Retriever Essentials</strong><small>Basic Needs Impact Dashboard</small></span></a>
+    <div class="top-actions"><span class="demo-tag">DEMO DATA</span><button class="button button-quiet" id="accountButton" type="button">◉ Viewer ▾</button></div>
+  </header>
+  
+  <div class="app-layout">
+    <aside class="sidebar">
+      <p class="nav-label">WORKSPACE</p>
+      <a class="nav-link active" href="Student%20Data%20Dashboard.html"><span>▦</span> Overview</a>
+      <a class="nav-link" href="#visual-builder"><span>▥</span> Visualizations</a>
+      <a class="nav-link" href="#datasets"><span>▤</span> Datasets</a>
+      <div class="sidebar-bottom"><div class="privacy-note"><strong>Privacy first</strong><p>Use aggregated, anonymized data only. Do not upload identifiable student information.</p></div><small>Retriever Essentials · Prototype</small></div>
+    </aside>
+  
+<div class="container">
+  <h1>PLACEHOLDER: The issue we care about the most</h1>
+  <div class="section">
+    <h2>Summary/Stats</h2>
+
+    <main class="main-content">
+      <div class="page-heading"><div><p class="eyebrow">UMBC · STUDENT BASIC NEEDS</p><h1>Impact overview</h1><p class="subtitle">Explore service data and understand how Retriever Essentials supports the campus community.</p></div><a class="button button-primary" href="UploadData.html">＋ Upload CSV</a></div>
+      <div class="notice" id="demoNotice"><span>ⓘ</span><div><strong>Prototype environment</strong><p>Sample figures are illustrative, not official UMBC statistics. Uploaded datasets are stored in this browser for this demo.</p></div><button type="button" class="icon-button" id="dismissNotice" aria-label="Dismiss notice">×</button></div>
+      <section class="toolbar"><div><label for="dept">Department</label><select id="dept"><option value="All">All departments</option></select></div><div class="toolbar-meta" id="datasetCount">0 datasets</div></section>
+      <section class="kpis" id="kpis" aria-live="polite"></section>
+      <section class="section-heading"><div><h2>Dashboard visualizations</h2><p>Charts update when you change the department or upload a dataset.</p></div></section>
+      <section class="charts-grid">
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Services by category</h3><p>Illustrative monthly service totals</p></div><span class="chart-label">BAR</span></div><div class="chart-box"><canvas id="c1" aria-label="Services by category chart"></canvas></div></article>
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Monthly service trend</h3><p>Illustrative change over time</p></div><span class="chart-label">LINE</span></div><div class="chart-box"><canvas id="c2" aria-label="Monthly service trend chart"></canvas></div></article>
+      </section>
+      <section class="panel builder-panel" id="visual-builder"><div class="section-heading"><div><h2>Build a visualization</h2><p>Select a dataset and its columns to create a chart.</p></div></div>
+        <div class="builder-controls"><div><label for="chartDataset">Dataset</label><select id="chartDataset"></select></div><div><label for="chartType">Chart type</label><select id="chartType"><option value="bar">Bar chart</option><option value="line">Line graph</option><option value="scatter">Scatterplot</option><option value="doughnut">Doughnut chart</option></select></div><div><label for="xColumn" id="xLabel">Category / X axis</label><select id="xColumn"></select></div><div><label for="yColumn">Value / Y axis</label><select id="yColumn"></select></div><button class="button button-primary" id="buildChart" type="button">Create chart</button></div>
+        <div id="customChartMessage" class="empty-state">Upload a CSV to build a chart from your own data.</div><div class="chart-box custom-chart-box"><canvas id="customChart"></canvas></div>
+      </section>
+      <section class="panel" id="datasets"><div class="section-heading"><div><h2>Uploaded datasets</h2><p>Review files currently available in this browser demo.</p></div><a class="text-link" href="UploadData.html">Manage uploads →</a></div><div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Department</th><th>Rows</th><th>Uploaded</th><th>Source</th><th>Action</th></tr></thead><tbody id="datasetRows"></tbody></table></div><div class="empty-state" id="noDatasets" hidden>No uploaded datasets yet. <a href="UploadData.html">Upload your first CSV</a>.</div></section>
+      <footer>UMBC Retriever Essentials · Basic Needs Impact Dashboard <span>Demo prototype · No official student data</span></footer>
+    </main>
+    
+  </div>
+    
+</div>
+
+<script src="/static/script.js"></script>
+    
+</body>
+</html>  

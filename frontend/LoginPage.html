@@ -1,0 +1,66 @@
+<!--
+The form class basically will route the HTML request to the Flask API for the backend.
+The action = "/login" means it will route this request to the /login route of the Flask backend.
+Method = post is defining that it will send a POST request to backend.
+The if error stuff is a template tag. If the backend passes back an 'error' variable, this will
+display the specific error like "Invalid Password".
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Login Page</title>
+<link rel="stylesheet" href="/frontend/style.css">
+</head>
+<body class="form-page">
+
+<div class="form-shell">
+    <div class="form-brand">
+        <span class="brand-mark">RE</span>
+        <span><strong>Retriever Essentials</strong><small>Basic Needs Impact Dashboard</small></span>
+    </div>
+
+    <div class="form-card">
+        <h1>Welcome back</h1>
+        <p class="form-lead">Sign in to view the dashboard. Your account automatically controls which actions you can take.</p>
+
+        <form action="/login" method="post">
+            <div class="field">
+                <label for="username">Account Username</label>
+                <input type="text" id="username" name="username" placeholder="e.g., Bob145" autocomplete="username" required autofocus />
+            </div>
+
+            <div class="field">
+                <label for="password">Account Password</label>
+                <div class="password-wrap">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required />
+                    <button type="button" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Log In</button>
+
+            {% if error %}
+                <p class="form-error" role="alert">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div>
+
+    <p class="form-footer">UMBC Retriever Essentials · Authorized staff only</p>
+</div>
+
+<script>
+    //Show/Hide password toggle
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(btn.getAttribute('aria-controls'));
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.textContent = show ? 'Hide' : 'Show';
+            btn.setAttribute('aria-pressed', show);
+        });
+    });
+</script>
+</body>
+</html>

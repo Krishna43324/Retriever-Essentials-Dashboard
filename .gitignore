@@ -1,6 +1,7 @@
 # Python cache files
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
 
 # Python virtual environments
 .venv/
@@ -12,6 +13,7 @@ venv/
 
 # Uploaded CSV files
 backend/uploads/
+uploads/
 
 # IDE settings
 .vscode/
