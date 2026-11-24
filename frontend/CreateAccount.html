@@ -22,7 +22,9 @@
         <div class="form-note">
             <span aria-hidden="true">ⓘ</span>
             <div>You are an administrator. Specify the username and password of the account you want to create,
-            then give these credentials to a staff member of each department.</div>
+            then give these credentials to a staff member of each department. Please only give staff members the 'staff' role.
+            Give the administrators of the Retrievers Essentials 'administrator' privileges.
+            </div>
         </div>
 
         <div class="field">
@@ -36,6 +38,15 @@
                 <input type="password" id="password" placeholder="Choose a password" autocomplete="new-password" />
                 <button type="button" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
             </div>
+        </div>
+
+        <div class="field">
+            <label for="role">Account role</label>
+            <select id="role" name="role" required>
+                <option value="staff" selected>Staff</option>
+                <option value="viewer">Viewer</option>
+                <option value="admin">Administrator</option>
+            </select>
         </div>
 
         <div class="form-actions">
