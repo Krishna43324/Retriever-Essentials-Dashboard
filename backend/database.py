@@ -164,7 +164,12 @@ def get_csv_by_dataset_name(dataset_name: str) -> Optional[dict]:
         (dataset_name,),
         fetch="one",
     )
- 
+
+def get_all_csv_datasets():
+    return _run(
+        "SELECT dataset_name FROM csv_files ORDER BY dataset_name",
+        fetch="all",
+    )
  
 def insert_csv_file(dataset_name: str, file_name: str, file_path: str,
                     file_size_bytes: int, row_count: int, uploader_id: int,
