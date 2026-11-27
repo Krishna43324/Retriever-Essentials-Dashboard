@@ -27,8 +27,11 @@
 
         <div class="dataset">
             <div class="field">
-                <label for="datasetName">Dataset name</label>
-                <input type="text" id="datasetName" placeholder="e.g., Retrievers Essentials Department Student Impact Data" />
+                <label for="datasetName">Choose a dataset</label>
+                <select id="datasetName" required>
+                    <option value="" selected disabled>Loading datasets...</option>
+                </select>
+                <p id="datasetStatus" class="hint" role="status"></p>
             </div>
 
             <button class="btn btn-primary" onclick="retrieveData()">Submit Dataset Name</button>
@@ -36,7 +39,7 @@
             <div class="field" style="margin-top:18px">
                 <label for="columnDropdown">Choose a column</label>
                 <select id="columnDropdown" name="selected_item">
-                    <option value="" disabled selected>Loading options...</option>
+                    <option value="" disabled selected>Select a dataset and load its columns</option>
                 </select>
             </div>
         </div>

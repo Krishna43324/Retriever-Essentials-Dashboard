@@ -263,8 +263,43 @@ def deleteData(user):
 @app.route("/create-chart", methods=["POST"])
 @api_login_required()
 def retrieveDataSet(user):
-    # Chart persistence is not implemented yet.
-    return jsonify(success=False, message="Chart creation is not implemented yet."), 501
+    data = request.get_json(silent=True) or {}
+    dataset_name = (data.get("datasetName") or "").strip()
+
+    if data.get("action") != "get_columns":
+        return jsonify(success=False, message="Unknown chart action."), 400
+    if not dataset_name:
+        return jsonify(success=False, message="Choose a dataset."), 400
+
+    try:
+        record = database.get_csv_by_dataset_name(dataset_name)
+        if record is None:
+            return jsonify(success=False, message="Dataset not found."), 404
+
+        with open(record["file_path"], newline="", encoding="utf-8-sig") as csv_file:
+            columns = next(csv.reader(csv_file), [])
+
+        return jsonify(success=True, columns=columns)
+
+    except Error:
+        app.logger.exception("Database error loading dataset columns")
+        return jsonify(success=False, message="Database error loading the dataset."), 500
+    except (OSError, UnicodeError, csv.Error):
+        app.logger.exception("Could not read dataset columns")
+        return jsonify(success=False, message="Could not read the dataset file."), 500
+
+
+
+@app.route("/datasets", methods=["GET"])
+@api_login_required()
+def list_datasets(user):
+    try:
+        datasets = database.get_all_csv_datasets()
+    except Error:
+        app.logger.exception("Could not load dataset names")
+        return jsonify(success=False, message="Could not load datasets."), 500
+
+    return jsonify(success=True, datasets=datasets)
 
 
 if __name__ == "__main__":
