@@ -1,3 +1,12 @@
+"""
+Retriever Essentials - Basic Needs Impact Dashboard
+
+CSV Validator Unit Tests
+
+Test the CSV validator to ensure that uploaded CSV files
+are properly validated before being processed and stored.
+"""
+
 import unittest
 import tempfile
 from pathlib import Path
@@ -68,9 +77,10 @@ class TestCSVValidator(unittest.TestCase):
             "Month,Students_Served\nAugust,95\n"
         )
 
-        # Check whether the file size is allowed
+        # Check whether the file exists and is not empty
         result = self.validator.validate_file_size(file_path)
 
+        # Non-empty files should be accepted
         self.assertTrue(result)
 
     def test_empty_file(self):
@@ -82,21 +92,6 @@ class TestCSVValidator(unittest.TestCase):
 
         self.assertFalse(result)
 
-    def test_oversized_file(self):
-        # Create a validator with a 10-byte limit for testing
-        small_validator = CSV_validator(max_file_size=10)
-
-        # Create a file larger than 10 bytes
-        file_path = self.create_test_file(
-            "large.csv",
-            "Month,Students_Served\nAugust,95\n"
-        )
-
-        # Check whether the oversized file is rejected
-        result = small_validator.validate_file_size(file_path)
-
-        self.assertFalse(result)
-
     def test_missing_file(self):
         # Create a path to a file that does not exist
         file_path = str(self.folder_path / "missing.csv")
@@ -105,6 +100,26 @@ class TestCSVValidator(unittest.TestCase):
         result = self.validator.validate_file_size(file_path)
 
         self.assertFalse(result)
+
+    def test_large_file(self):
+        # Create a valid CSV file larger than the previous 10 MB limit
+        file_path = self.create_test_file(
+            "large.csv",
+            "Month,Students_Served\n" +
+            "September,120\n" * 1000000
+        )
+
+        # Confirm that the file exceeds the previous size limit
+        self.assertGreater(
+            Path(file_path).stat().st_size,
+            10 * 1024 * 1024
+        )
+
+        # Run all validation checks on the large file
+        result = self.validator.validate(file_path)
+
+        # Large CSV files should now be accepted
+        self.assertTrue(result)
 
     # ==================================================
     # Test validate_structure()
@@ -158,6 +173,46 @@ class TestCSVValidator(unittest.TestCase):
         # Duplicate headers should not be accepted
         result = self.validator.validate_structure(file_path)
 
+        self.assertFalse(result)
+
+    def test_header_only(self):
+        # Create a CSV containing headers but no data rows
+        file_path = self.create_test_file(
+            "header_only.csv",
+            "Month,Students_Served\n"
+        )
+
+        # Check whether the validator detects missing data rows
+        result = self.validator.validate_structure(file_path)
+
+        # CSV files without data rows should be rejected
+        self.assertFalse(result)
+
+    def test_empty_header_row(self):
+        # Create a CSV with an empty first row
+        file_path = self.create_test_file(
+            "empty_header.csv",
+            "\nAugust,95\n"
+        )
+
+        # Check whether the validator detects the empty header row
+        result = self.validator.validate_structure(file_path)
+
+        # CSV files with empty header rows should be rejected
+        self.assertFalse(result)
+
+    def test_empty_column_name(self):
+        # Create a CSV containing an unnamed column
+        file_path = self.create_test_file(
+            "empty_column.csv",
+            "Month,,Students_Served\n"
+            "August,Retriever Essentials,95\n"
+        )
+
+        # Check whether the validator detects the empty column name
+        result = self.validator.validate_structure(file_path)
+
+        # CSV files with empty column names should be rejected
         self.assertFalse(result)
 
     # ==================================================
@@ -263,3 +318,4 @@ class TestCSVValidator(unittest.TestCase):
 # Run the tests when this file is executed directly
 if __name__ == "__main__":
     unittest.main()
+

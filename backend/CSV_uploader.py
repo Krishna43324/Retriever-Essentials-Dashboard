@@ -64,12 +64,18 @@ class CSVUploader:
         # Create the complete path where the file will be saved
         saved_path = self.upload_directory / unique_filename
 
-        try:
-            # Keep track of the total number of bytes uploaded
-            total_size = 0
+        # Keep track of whether the upload was completed successfully
+        upload_successful = False
 
-            # Open the destination file in binary write mode
+        # Keep track of whether this upload created the file
+        file_created = False
+
+        try:
+            # Open destination file 
             with open(saved_path, "xb") as saved_file:
+
+                # Record that this upload created a new file
+                file_created = True
 
                 # Read the uploaded file in chunks instead of all at once
                 while True:
@@ -81,16 +87,6 @@ class CSVUploader:
                     if not chunk:
                         break
 
-                    # Add the chunk size to the total uploaded size
-                    total_size += len(chunk)
-
-                    # Reject the file if it exceeds the validator's size limit
-                    if total_size > self.validator.max_file_size:
-                        return {
-                            "success": False,
-                            "message": "CSV file exceeds the maximum allowed size."
-                        }
-
                     # Write the current chunk to the destination file
                     saved_file.write(chunk)
 
@@ -100,6 +96,9 @@ class CSVUploader:
                     "success": False,
                     "message": "CSV file failed validation."
                 }
+
+            # Mark that upload is successful when validation cond is passed
+            upload_successful = True
 
             # Return information about the successful upload
             return {
@@ -119,14 +118,10 @@ class CSVUploader:
             }
 
         finally:
-            # Remove rejected or incomplete files from the upload folder
-            # A successfully validated file will be kept
-            if saved_path.exists():
-
-                # Check whether the saved file is valid
-                if not self.validator.validate(str(saved_path), required_columns):
-
-                    # Delete the invalid file
+            # Check if the upload create incomplete file
+            if file_created and not upload_successful:
+                # Check if file still exist
+                if saved_path.exists():
                     saved_path.unlink()
 
     def get_upload_status(self, dataset_id):

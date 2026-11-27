@@ -19,7 +19,6 @@ from pathlib import Path
 #
 # What it does:
 # - Check that the file has a .csv extension
-# - Check that the file is within the allowed size limit
 # - Verify that the file contains readable CSV data
 # - Check that CSV headers and rows are properly formatted
 #
@@ -28,10 +27,7 @@ from pathlib import Path
 
 class CSV_validator:
 
-    def __init__(self, max_file_size=10 * 1024 * 1024):
-
-        # Maximum allowed file size (default: 10 MB)
-        self.max_file_size = max_file_size
+    def __init__(self):
 
         # Only CSV files are allowed by the project requirements
         self.allowed_extensions = {".csv"}
@@ -53,17 +49,17 @@ class CSV_validator:
 
     def validate_file_size(self, file_path: str) -> bool:
         """
-        Check whether the file exceeds the maximum allowed size.
+        Check whether the file exist and is not empty 
         """
 
         # Convert the file path into a Path object
         file = Path(file_path)
 
-        # Check whether the file exists and is a regular file
-        if not file.is_file():
-            return False
-
         try:
+            # Check whether the file exists and is a regular file
+            if not file.is_file():
+                return False
+
             # Get the size of the file in bytes
             file_size = file.stat().st_size
 
@@ -71,16 +67,12 @@ class CSV_validator:
             if file_size == 0:
                 return False
 
-            # Check whether the file is within the allowed size
-            if file_size <= self.max_file_size:
-                return True
+            # Accept non-empty files regardless of their size
+            return True
 
         # Handle errors when accessing the file
         except OSError:
             return False
-
-        # Return False if the file is too large
-        return False
 
     def validate_structure(self, file_path: str) -> bool:
         """
@@ -97,10 +89,10 @@ class CSV_validator:
                 # Read the first row containing column headers
                 headers = next(reader, None)
 
-                # Reject files that have no headers
-                if headers is None:
+                # Reject files that have no headers or an empty header row
+                if not headers:
                     return False
-
+                
                 # Reject files containing empty column names
                 if any(header.strip() == "" for header in headers):
                     return False
@@ -112,12 +104,22 @@ class CSV_validator:
                 # Store the number of columns expected in each row
                 column_count = len(headers)
 
+                # Keep track of the number of data rows
+                row_count = 0
+
                 # Check each remaining row in the CSV
                 for row in reader:
 
                     # Reject rows with missing or extra columns
                     if len(row) != column_count:
                         return False
+
+                    # Increase the number of valid rows
+                    row_count += 1
+
+                # Reject files that contain headers but no data
+                if row_count == 0:
+                    return False
 
             # Return True if all rows have the correct structure
             return True
